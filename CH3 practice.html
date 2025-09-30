@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新思维英语1B Chapter 3 - 挑战游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            min-height: 500px;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        h1 {
+            color: #764ba2;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Comic Sans MS', cursive;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            font-family: 'Comic Sans MS', cursive;
+            display: block;
+            margin: 30px auto;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        
+        .question h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .option {
+            padding: 10px;
+            background: #e9ecef;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .option:hover {
+            background: #dee2e6;
+        }
+        
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #764ba2;
+        }
+        
+        .audio-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 10px 0;
+            font-family: 'Comic Sans MS', cursive;
+        }
+        
+        .audio-btn:hover {
+            background: #218838;
+        }
+        
+        .word-drag {
+            display: inline-block;
+            padding: 8px 15px;
+            margin: 5px;
+            background: #ffc107;
+            border-radius: 8px;
+            cursor: move;
+            font-size: 16px;
+        }
+        
+        .drop-zone {
+            min-height: 50px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px 0;
+            background: #f8f9fa;
+        }
+        
+        .drop-zone.filled {
+            border-style: solid;
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .result-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .correct {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .incorrect {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .encouragement {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        
+        .perfect {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .good {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .need-work {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .progress {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 启动页面 -->
+        <div id="startPage" class="page active">
+            <h1>🎯 新思维英语1B Chapter 3</h1>
+            <h2>挑战即将开始！</h2>
+            <form id="userForm">
+                <div class="form-group">
+                    <label for="name">姓名：</label>
+                    <input type="text" id="name" required placeholder="请输入你的名字">
+                </div>
+                <div class="form-group">
+                    <label for="studentId">学号：</label>
+                    <input type="text" id="studentId" required placeholder="请输入你的学号">
+                </div>
+                <div class="form-group">
+                    <label for="class">班级：</label>
+                    <input type="text" id="class" required placeholder="请输入你的班级">
+                </div>
+                <button type="submit" class="btn">开始挑战 🚀</button>
+            </form>
+        </div>
+
+        <!-- 游戏页面 -->
+        <div id="gamePage" class="page">
+            <div class="progress">
+                <span id="progressText">第 1 题 / 共 8 题</span>
+            </div>
+            <div id="questionsContainer"></div>
+            <button class="btn" onclick="submitAnswers()">提交答案</button>
+        </div>
+
+        <!-- 结果页面 -->
+        <div id="resultPage" class="page">
+            <h1>🎉 挑战完成！</h1>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+   <script>
+/* ==========  以下仅替换原 <script> 内容  ========== */
+let currentQuestion = 0;
+let userAnswers   = [];
+let userInfo      = {};
+
+/* ---------------- 题目数据 ---------------- */
+const questions = [
+  {
+    type: 'audio-choice',
+    question: '听录音，选择正确的动物',
+    audioText: 'a hippo',          // ★ 原文
+    options: ['a hippo','a lion','a monkey','an elephant'],
+    correct: 'a hippo'
+  },
+  {
+    type: 'fill-blank',
+    question: '听录音，填写数字',
+    audioText: 'twelve',
+    sentence: 'There are ___ snakes.',
+    correct: 'twelve'
+  },
+  {
+    type: 'reorder',
+    question: '将单词拖拽组成正确的句子',
+    words: ['many','How','hippos','there','are','?'],
+    correct: 'How many hippos are there?'
+  },
+  {
+    type: 'audio-choice',
+    question: '听录音，选择正确的答句',
+    audioText: 'There are two lions.',
+    questionText: 'How many lions are there?',
+    options: ['There is one lion.','There are two lions.','There are three lions.'],
+    correct: 'There are two lions.'
+  },
+  {
+    type: 'picture-choice',
+    question: '看图选择正确的句子',
+    options: ['The monkey is in the tree.','The monkey is on the grass.','The monkey is near the river.'],
+    correct: 'The monkey is in the tree.'
+  },
+  {
+    type: 'fill-blank',
+    question: '根据提示完成句子',
+    prompt: '河马在哪里？',
+    sentence: 'The hippo is ___ ___ ___ (在河里).',
+    correct: 'in the river'
+  },
+  {
+    type: 'choice',
+    question: '选择正确的问句',
+    options: ['How many zebra are there?','How many zebras are there?','How many a zebra are there?'],
+    correct: 'How many zebras are there?'
+  },
+  {
+    type: 'dialogue',
+    question: '选择正确的答句完成对话',
+    dialogue: ['A: Where are the lions?','B: ___'],
+    options: ['It is on the grass.','They are on the grass.','There are on the grass.'],
+    correct: 'They are on the grass.'
+  }
+];
+
+/* ---------------- 页面切换 ---------------- */
+document.getElementById('userForm').addEventListener('submit', e => {
+  e.preventDefault();
+  userInfo = {
+    name: document.getElementById('name').value.trim(),
+    studentId: document.getElementById('studentId').value.trim(),
+    class: document.getElementById('class').value.trim()
+  };
+  document.getElementById('startPage').classList.remove('active');
+  document.getElementById('gamePage').classList.add('active');
+  showQuestion();
+});
+
+/* ---------------- 显示题目 ---------------- */
+function showQuestion() {
+  const box = document.getElementById('questionsContainer');
+  box.innerHTML = '';
+  if (currentQuestion >= questions.length) { showResults(); return; }
+
+  const q = questions[currentQuestion];
+  let html = `<h3>${q.question}</h3>`;
+
+  /* ★ 替换播放按钮：显示原文 */
+  if (q.audioText) {
+    html += `<button class="audio-btn" onclick="alert('录音原文：${q.audioText}')">📣 显示录音原文</button>`;
+  }
+  if (q.picture) {
+    html += `<div style="text-align:center;margin:20px 0"><div style="background:#f0f0f0;padding:40px;display:inline-block;border-radius:10px">图片</div></div>`;
+  }
+  if (q.questionText) html += `<p style="font-size:18px;margin:15px 0;color:#555">${q.questionText}</p>`;
+
+  /* —— 以下题型渲染与原代码相同 —— */
+  if (['audio-choice','choice','picture-choice','dialogue'].includes(q.type)) {
+    html += '<div class="options">';
+    q.options.forEach((opt, idx) => html += `<div class="option" onclick="selectOption(${idx})">${opt}</div>`);
+    html += '</div>';
+  } else if (q.type === 'fill-blank') {
+    html += `<input type="text" id="fillAnswer" placeholder="请输入答案" style="font-size:18px;padding:10px;width:200px">`;
+    if (q.prompt) html += `<p style="margin-top:10px;color:#666">提示：${q.prompt}</p>`;
+  } else if (q.type === 'reorder') {
+    html += '<div id="wordBank" style="margin-bottom:20px">';
+    q.words.forEach(w => html += `<span class="word-drag" draggable="true" data-word="${w}">${w}</span>`);
+    html += '</div><div id="dropZone" class="drop-zone">将单词拖拽到这里组成句子</div>';
+  }
+
+  box.innerHTML = html;
+  if (q.type === 'reorder') setupDragAndDrop();
+  document.getElementById('progressText').textContent = `第 ${currentQuestion+1} 题 / 共 ${questions.length} 题`;
+}
+
+/* ---------------- 交互函数 ---------------- */
+function selectOption(idx) {
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.option')[idx].classList.add('selected');
+  userAnswers[currentQuestion] = questions[currentQuestion].options[idx];
+}
+function setupDragAndDrop() {
+  const dropZone = document.getElementById('dropZone');
+  let dropped = [];
+  document.querySelectorAll('.word-drag').forEach(w => {
+    w.addEventListener('dragstart', e => e.dataTransfer.setData('text', e.target.dataset.word));
+  });
+  dropZone.addEventListener('dragover', e => e.preventDefault());
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropped.push(e.dataTransfer.getData('text'));
+    dropZone.innerHTML = dropped.join(' ');
+    dropZone.classList.add('filled');
+    userAnswers[currentQuestion] = dropped.join(' ');
+  });
+}
+function submitAnswers() {
+  const q = questions[currentQuestion];
+  if (q.type === 'fill-blank') userAnswers[currentQuestion] = document.getElementById('fillAnswer').value.trim();
+  currentQuestion++;
+  currentQuestion >= questions.length ? showResults() : showQuestion();
+}
+
+/* ---------------- 结果页 ---------------- */
+function showResults() {
+  document.getElementById('gamePage').classList.remove('active');
+  document.getElementById('resultPage').classList.add('active');
+
+  let correctCount = 0, detailHTML = '';
+  questions.forEach((q, idx) => {
+    const userAns = userAnswers[idx] || '未作答';
+    const ok = userAns.toLowerCase() === q.correct.toLowerCase();
+    if (ok) correctCount++;
+    detailHTML += `
+      <div class="result-item">
+        <p><strong>第${idx+1}题：</strong>${q.question}</p>
+        <p>你的答案：<span class="${ok?'correct':'incorrect'}">${userAns}</span></p>
+        ${!ok?`<p>正确答案：<span class="correct">${q.correct}</span></p>`:''}
+      </div>`;
+  });
+
+  const acc = Math.round(correctCount/questions.length*100);
+  let enc = '', encClass='';
+  if (acc===100)       { enc='🎉 恭喜通关！你是英语小达人！'; encClass='perfect'; }
+  else if (acc >= 80)  { enc='💪 继续努力，你已经很棒了！'; encClass='good'; }
+  else                 { enc='📚 要加油了，相信你会越来越棒！'; encClass='need-work'; }
+
+  document.getElementById('resultContent').innerHTML = `
+    <div style="text-align:center;margin-bottom:30px">
+      <h2>挑战结果</h2>
+      <p style="font-size:24px;margin:20px 0">正确率：<strong>${acc}%</strong> (${correctCount}/${questions.length})</p>
+      <p>做对 ${correctCount} 道题，做错 ${questions.length-correctCount} 道题</p>
+    </div>
+    <div class="encouragement ${encClass}">${enc}</div>
+    <div style="text-align:center;margin:30px 0">
+      <h3>${userInfo.name} 已完成挑战！</h3>
+      <p>学号：${userInfo.studentId} | 班级：${userInfo.class}</p>
+    </div>
+    <h3>详细结果：</h3>${detailHTML}
+    <button class="btn" onclick="location.reload()">重新挑战</button>`;
+}
+</script>
+</body>
+</html>
